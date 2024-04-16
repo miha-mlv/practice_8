@@ -5,19 +5,26 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity">
+
     <Button
-        android:id="@+id/btJustDoIt"
+        android:id="@+id/startBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Начать в потоке" />
-    <Button
-        android:id="@+id/btStart"
+        android:text="Start"
+        />
+    <TextView
+        android:id="@+id/textCounter1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Начать не в потоке" />
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:layout_width="184dp"
+        android:text="N: counter1" />
+    <TextView
+        android:id="@+id/textCounter2"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="проверка" />
+        android:text="N: counter2" />
+    <TextView
+        android:id="@+id/textCounter3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="N: counter3" />
 </LinearLayout>

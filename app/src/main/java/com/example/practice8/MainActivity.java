@@ -19,49 +19,118 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.practice8.databinding.ActivityMainBinding;
+
 public class MainActivity extends AppCompatActivity {
-    public final String TAG = "RRR";
-    Button bStart, btJustDoIt;
-    private Data data = new Data.Builder().putString("key1", "String1").putInt("key2", 123).build();;
-    private  OneTimeWorkRequest work = new OneTimeWorkRequest.Builder(MyWorker.class).setInputData(data).build();
+    private TextView textCounter1, textCounter2, textCounter3;
+    private Button startBtn;
+    private ActivityMainBinding binding;
+    private Handler handler1, handler2, handler3;
+    private Thread thread1, thread2, thread3;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        bStart = findViewById(R.id.btStart);
-        btJustDoIt= findViewById(R.id.btJustDoIt);
-        // устанавливаем обработчик на кнопку "Начать в потоке"
-        btJustDoIt.setOnClickListener(new View.OnClickListener() {
+        initThread();
+        init();
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        handler1 = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(@NonNull Message msg) {
+                //Обработка сообщений, ориентируясь на имя потока
+                if (Thread.currentThread().getName() == "thread1") {
+                    Log.d("Counter1", "set value");
+                    int n = msg.getData().getInt("key");
+                    textCounter1.setText("N: " + n);
+                } else if (Thread.currentThread().getName() == "thread2") {
+                    int n = msg.getData().getInt("key");
+                    Log.d("Counter2", "set value");
+                    textCounter2.setText("N: " + n);
+                } else if (Thread.currentThread().getName() == "thread3") {
+                    int n = msg.getData().getInt("key");
+                    Log.d("Counter3", "set value");
+                    textCounter3.setText("N: " + n);
+                }
+                // здесь мы будем ждать сообщения из другого потока
+                //int n = msg.getData().getInt("key");
+                //binding.textCounter1.setText("N: "+n);
+                //if(n==49) binding.startBtn.setEnabled(true);
+            }
+        };
+        startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WorkManager.getInstance(getApplicationContext()).enqueue(work);
-            }
-        });
-
-        // устанавливаем обработчик на кнопку "Начать не в потоке"
-        bStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "Work is in progress");
+                //binding.startBtn.setEnabled(false);
                 try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
+                    thread1.start();
+                    thread2.start();
+                    thread3.start();
+                } catch (Throwable e) {
                     e.printStackTrace();
                 }
-                Log.d(TAG, "Work finished");
             }
         });
-        //Получаем данные переданные из потока MyWorker
-        WorkManager.getInstance(this).getWorkInfoByIdLiveData(work.getId()).observe(
-                this, new Observer<WorkInfo>() {
-                    @Override
-                    public void onChanged(WorkInfo workInfo) {
-                        Log.d("RRR","State = " + workInfo.getState());
-                        Log.d("RRR", "key="+workInfo.getOutputData().getString("key3"));
-                        Log.d("RRR", "key="+workInfo.getOutputData().getInt("key0",0));
-                    }
-                }
-        );
+    }
 
+    //    public void doSlow() {
+//        for(int i=0;i<50;i++) {
+//            Message message = new Message();
+//            Bundle bundle = new Bundle();
+//            bundle.putInt("key",i);
+//            message.setData(bundle);
+//            handler1.sendMessage(message);
+//        }
+//    }
+    private void initThread() {
+        thread1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 5; i++) {
+                    Message message = new Message();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("key", i);
+                    message.setData(bundle);
+                    handler1.sendMessage(message);
+                }
+            }
+        });
+        thread1.setName("thread1");
+
+        thread2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 10; i++) {
+                    Message message = new Message();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("key", i);
+                    message.setData(bundle);
+                    handler1.sendMessage(message);
+                }
+            }
+        });
+        thread2.setName("thread2");
+
+        thread3 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 15; i++) {
+                    Message message = new Message();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("key", i);
+                    message.setData(bundle);
+                    handler1.sendMessage(message);
+                }
+            }
+        });
+        thread3.setName("thread3");
+    }
+
+    private void init()
+    {
+        textCounter1 = findViewById(R.id.textCounter1);
+        textCounter2 = findViewById(R.id.textCounter2);
+        textCounter3 = findViewById(R.id.textCounter3);
+        startBtn = findViewById(R.id.startBtn);
     }
 }
