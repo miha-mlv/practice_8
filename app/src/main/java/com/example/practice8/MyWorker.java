@@ -10,22 +10,14 @@ import androidx.work.WorkerParameters;
 
 public class MyWorker extends Worker {
     public final String TAG = "MY_TAG";
+    public static String text = "Worker";
     public MyWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
-        int x = workerParams.getInputData().getInt("key2", 0);
-        String s = workerParams.getInputData().getString("key1");
     }
     @NonNull
     @Override
     public Result doWork() {
-        Log.v(TAG, "Work is in progress");
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        Log.v(TAG, "Work finished");
-        Data data = new Data.Builder().putString("key1","StringOutput1").build();
+        Data data = new Data.Builder().putString("key1",text).build();
         return Worker.Result.success(data);
     }
 }

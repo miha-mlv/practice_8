@@ -13,18 +13,8 @@
         android:text="Start"
         />
     <TextView
-        android:id="@+id/textCounter1"
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="N: counter1" />
-    <TextView
-        android:id="@+id/textCounter2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="N: counter2" />
-    <TextView
-        android:id="@+id/textCounter3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="N: counter3" />
+        android:text="Text" />
 </LinearLayout>
